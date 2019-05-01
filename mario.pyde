@@ -11,13 +11,13 @@ class Creature:
         self.img = loadImage(path + "/images/" + img)
         self.frame_width = frame_width
         self.frame_height = frame_height
-        self.key_pressed = {LEFT: False, RIGHT: False}
+        self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
 
     def gravity(self):
         if self.y + self.radius < g.ground:
             # Our creature is falling down
             self.vy = self.vy + 0.3
-        else:
+        elif self.vy > 0:
             # Creature is on the ground
             self.vy = 0
         
@@ -33,6 +33,9 @@ class Creature:
             self.x -= 5
         elif self.key_pressed[RIGHT]:
             self.x += 5
+        
+        if self.key_pressed[UP] and self.vy == 0:
+            self.vy = -10
 
     def display(self):
         self.update()
@@ -60,12 +63,16 @@ class Game:
             self.mario.key_pressed[LEFT] = True
         elif keyCode == RIGHT:
             self.mario.key_pressed[RIGHT] = True
+        elif keyCode == UP:
+            self.mario.key_pressed[UP] = True
             
     def handle_keyrelease(self):
         if keyCode == LEFT:
             self.mario.key_pressed[LEFT] = False
         elif keyCode == RIGHT:
             self.mario.key_pressed[RIGHT] = False
+        elif keyCode == UP:
+            self.mario.key_pressed[UP] = False
 
 g = Game(1280, 720, 600)
 
