@@ -14,7 +14,6 @@ class Creature:
         self.num_frames = num_frames
         self.curr_frame = 0
         self.direction = 1 # by default creature walks to the right
-        self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
 
     def gravity(self):
         if self.y + self.radius < g.ground:
@@ -31,17 +30,7 @@ class Creature:
 
     def update(self):
         self.gravity()
-        
-        if self.key_pressed[LEFT]:
-            self.direction = -1
-            self.x -= 5
-        elif self.key_pressed[RIGHT]:
-            self.direction = 1
-            self.x += 5
-        
-        if self.key_pressed[UP] and self.vy == 0:
-            self.vy = -10
-
+    
     def display(self):
         self.update()
         
@@ -62,12 +51,31 @@ class Creature:
               self.frame_width, self.frame_height,
               offset_x1, 0, offset_x2, self.frame_height)
 
+class Mario(Creature):
+    def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames):
+        Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
+        self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
+        
+    def update(self):
+        self.gravity()
+        
+        if self.key_pressed[LEFT]:
+            self.direction = -1
+            self.x -= 5
+        elif self.key_pressed[RIGHT]:
+            self.direction = 1
+            self.x += 5
+        
+        if self.key_pressed[UP] and self.vy == 0:
+            self.vy = -10
+
+
 class Game:
     def __init__(self, width, height, ground):
         self.width = width
         self.height = height
         self.ground = ground
-        self.mario = Creature(100, 100, 35, "mario.png", 100, 70, 11)
+        self.mario = Mario(100, 100, 35, "mario.png", 100, 70, 11)
         self.bgImg = []
         
         for i in range(1, 6):
