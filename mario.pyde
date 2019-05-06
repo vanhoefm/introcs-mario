@@ -16,10 +16,20 @@ class Creature:
         self.num_frames = num_frames
         self.curr_frame = 0
         self.direction = 1 # by default creature walks to the right
+        self.ground = 0
+
+    def determine_ground(self):
+        self.ground = g.ground
+        for p in g.platforms:
+            if p.x <= self.x <= p.x + p.width and self.y + self.radius <= p.y:
+                self.ground = p.y
 
     def gravity(self):
+        self.determine_ground()
+        print(self.ground)
+        
         # Updates the speed of falling down
-        if self.y + self.radius < g.ground:
+        if self.y + self.radius < self.ground:
             # Our creature is falling down
             self.vy = self.vy + 0.3
         elif self.vy > 0:
@@ -27,9 +37,9 @@ class Creature:
             self.vy = 0
         
         # Detect collision with the ground, and actually fall down
-        if self.y + self.radius + self.vy > g.ground:
+        if self.y + self.radius + self.vy > self.ground:
             # If the creature would hit the ground, set location equal to the ground
-            self.y = g.ground - self.radius
+            self.y = self.ground - self.radius
         else:
             # Creature doesn't yet hit the ground, so update location based
             # on the current speed of the creature.
@@ -132,7 +142,7 @@ class Game:
             self.bgImg.append(img)
             
         for i in range(3):
-            platform = Platform(300 + i * 100, 500 - i * 100, 200, 50)
+            platform = Platform(300 + i * 200, 500 - i * 100, 200, 50)
             self.platforms.append(platform)
             
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
