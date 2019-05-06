@@ -78,6 +78,7 @@ class Mario(Creature):
         self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
         self.sound_jump = audioPlayer.loadFile(path + "/sounds/jump.mp3")
         self.sound_dies = audioPlayer.loadFile(path + "/sounds/gameover.wav")
+        self.sound_kill = audioPlayer.loadFile(path + "/sounds/kill.mp3")
         
     def update(self):
         self.gravity()
@@ -100,10 +101,16 @@ class Mario(Creature):
         
         for enemy in g.enemies:
             if self.distance(enemy) <= self.radius + enemy.radius:
-                g.state = "pause"
-                self.sound_dies.rewind()
-                self.sound_dies.play()
-
+                if self.vy > 0:
+                    g.enemies.remove(enemy)
+                    self.vy = -10
+                    self.sound_kill.rewind()
+                    self.sound_kill.play()
+                else:
+                    g.state = "pause"
+                    self.sound_dies.rewind()
+                    self.sound_dies.play()
+    
 class Goomba(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, edge_right, edge_left):
         Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
