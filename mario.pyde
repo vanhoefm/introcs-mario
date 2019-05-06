@@ -84,6 +84,26 @@ class Mario(Creature):
             self.sound_jump.rewind()
             self.sound_jump.play()
 
+class Button:
+    def __init__(self, label, x, y, height, width):
+        self.label = label
+        self.x = x
+        self.y = y
+        self.height = height
+        self.width = width
+    
+    def contains_mouse(self):
+        return self.x <= mouseX <= self.x + self.width and self.y - self.height <= mouseY <= self.y
+    
+    def display(self):
+        print(self.x, mouseX, self.x + self.width)
+        if self.contains_mouse():
+            print("stroke is being called")
+            fill(255, 0, 0)
+        else:
+            fill(255)
+        textSize(40)
+        text(self.label, self.x, self.y)
 
 class Game:
     def __init__(self, width, height, ground):
@@ -92,12 +112,23 @@ class Game:
         self.ground = ground
         self.mario = Mario(100, 100, 35, "mario.png", 100, 70, 11)
         self.bgImg = []
+        self.state = "menu"
+        self.buttons = []
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
             self.bgImg.append(img)
+            
+        self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
+        self.buttons.append(Button("Instructions", self.width//2 - 100, self.height//2 + 50, 50, 250))
 
-    def display(self):
+    def displayMenu(self):
+        background(0)
+        
+        for button in self.buttons:
+            button.display()
+
+    def displayGame(self):
         for img in self.bgImg[::-1]:
             image(img, 0, 0)
         
@@ -105,6 +136,12 @@ class Game:
         line(0, self.ground, self.width, self.ground)
         
         self.mario.display()
+
+    def display(self):
+        if self.state == "menu":
+            self.displayMenu()
+        else:
+            self.displayGame()
         
     def handle_keypress(self):
         if keyCode == LEFT:
@@ -121,6 +158,10 @@ class Game:
             self.mario.key_pressed[RIGHT] = False
         elif keyCode == UP:
             self.mario.key_pressed[UP] = False
+            
+    def handle_mousepressed(self):
+        if self.buttons[0].contains_mouse():
+            self.state = "game"
 
 g = Game(1280, 720, 585)
 
@@ -136,3 +177,6 @@ def keyPressed():
 
 def keyReleased():
     g.handle_keyrelease()
+    
+def mousePressed():
+    g.handle_mousepressed()
