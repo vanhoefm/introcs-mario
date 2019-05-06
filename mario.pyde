@@ -16,6 +16,7 @@ class Creature:
         self.direction = 1 # by default creature walks to the right
 
     def gravity(self):
+        # Updates the speed of falling down
         if self.y + self.radius < g.ground:
             # Our creature is falling down
             self.vy = self.vy + 0.3
@@ -23,9 +24,13 @@ class Creature:
             # Creature is on the ground
             self.vy = 0
         
+        # Detect collision with the ground, and actually fall down
         if self.y + self.radius + self.vy > g.ground:
+            # If the creature would hit the ground, set location equal to the ground
             self.y = g.ground - self.radius
         else:
+            # Creature doesn't yet hit the ground, so update location based
+            # on the current speed of the creature.
             self.y = self.y + self.vy
 
     def update(self):
