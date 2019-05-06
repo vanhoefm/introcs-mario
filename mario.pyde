@@ -84,6 +84,17 @@ class Mario(Creature):
             self.sound_jump.rewind()
             self.sound_jump.play()
 
+class Platform:
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.img = loadImage(path + "/images/platform.png")
+    
+    def display(self):
+        image(self.img, self.x, self.y)
+
 class Button:
     def __init__(self, label, x, y, height, width):
         self.label = label
@@ -96,9 +107,9 @@ class Button:
         return self.x <= mouseX <= self.x + self.width and self.y - self.height <= mouseY <= self.y
     
     def display(self):
-        print(self.x, mouseX, self.x + self.width)
+        #print(self.x, mouseX, self.x + self.width)
         if self.contains_mouse():
-            print("stroke is being called")
+            #print("stroke is being called")
             fill(255, 0, 0)
         else:
             fill(255)
@@ -114,10 +125,15 @@ class Game:
         self.bgImg = []
         self.state = "menu"
         self.buttons = []
+        self.platforms = []
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
             self.bgImg.append(img)
+            
+        for i in range(3):
+            platform = Platform(300 + i * 100, 500 - i * 100, 200, 50)
+            self.platforms.append(platform)
             
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
         self.buttons.append(Button("Instructions", self.width//2 - 100, self.height//2 + 50, 50, 250))
@@ -134,6 +150,9 @@ class Game:
         
         stroke(255)
         line(0, self.ground, self.width, self.ground)
+        
+        for platform in self.platforms:
+            platform.display()
         
         self.mario.display()
 
