@@ -68,12 +68,16 @@ class Creature:
         image(self.img, self.x - self.frame_width//2, self.y - self.frame_height//2,
               self.frame_width, self.frame_height,
               offset_x1, 0, offset_x2, self.frame_height)
+    
+    def distance(self, other):
+        return ( (self.x - other.x)**2 + (self.y - other.y)**2 )**0.5
 
 class Mario(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames):
         Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
         self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
         self.sound_jump = audioPlayer.loadFile(path + "/sounds/jump.mp3")
+        self.sound_dies = audioPlayer.loadFile(path + "/sounds/gameover.wav")
         
     def update(self):
         self.gravity()
@@ -93,6 +97,12 @@ class Mario(Creature):
             self.vy = -10
             self.sound_jump.rewind()
             self.sound_jump.play()
+        
+        for enemy in g.enemies:
+            if self.distance(enemy) <= self.radius + enemy.radius:
+                g.state = "menu"
+                self.sound_dies.rewind()
+                self.sound_dies.play()
 
 class Goomba(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, edge_right, edge_left):
