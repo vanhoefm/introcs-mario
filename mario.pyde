@@ -41,10 +41,11 @@ class Creature:
         
         ellipse(self.x, self.y, 2 * self.radius, 2 * self.radius)
         
-        self.curr_frame = self.curr_frame + 0.2
-        if self.curr_frame >= self.num_frames:
-            self.curr_frame = 0
-        
+        if self.vx != 0:
+            self.curr_frame = self.curr_frame + 0.3
+            if self.curr_frame >= self.num_frames:
+                self.curr_frame = 0
+            
         offset_x1 = self.frame_width * int(self.curr_frame)
         offset_x2 = offset_x1 + self.frame_width
         if self.direction == -1:
@@ -66,11 +67,15 @@ class Mario(Creature):
         
         if self.key_pressed[LEFT]:
             self.direction = -1
-            self.x -= 5
+            self.vx = -5
         elif self.key_pressed[RIGHT]:
             self.direction = 1
-            self.x += 5
-        
+            self.vx = 5
+        else:
+            self.vx = 0
+
+        self.x += self.vx
+                
         if self.key_pressed[UP] and self.vy == 0:
             self.vy = -10
 
