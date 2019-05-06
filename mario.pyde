@@ -1,5 +1,7 @@
 import os
 path = os.getcwd()
+add_library("minim")
+audioPlayer = Minim(this)
 
 class Creature:
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames):
@@ -61,6 +63,7 @@ class Mario(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames):
         Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
         self.key_pressed = {LEFT: False, RIGHT: False, UP: False}
+        self.sound_jump = audioPlayer.loadFile(path + "/sounds/jump.mp3")
         
     def update(self):
         self.gravity()
@@ -78,6 +81,8 @@ class Mario(Creature):
                 
         if self.key_pressed[UP] and self.vy == 0:
             self.vy = -10
+            self.sound_jump.rewind()
+            self.sound_jump.play()
 
 
 class Game:
