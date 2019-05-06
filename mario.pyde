@@ -94,6 +94,28 @@ class Mario(Creature):
             self.sound_jump.rewind()
             self.sound_jump.play()
 
+class Goomba(Creature):
+    def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, edge_right, edge_left):
+        Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
+        self.edge_right = edge_right
+        self.edge_left = edge_left
+        self.vx = 3
+        self.direction = 1
+        
+    def update(self):
+        self.gravity()
+        
+        if self.x + self.vx > self.edge_left:
+            # Make it walk to the right instead
+            self.vx = -self.vx
+            self.direction = -1
+        elif self.x + self.vx < self.edge_right:
+            # Make it walk to the left instead
+            self.vx = -self.vx
+            self.direction = 1
+        
+        self.x += self.vx
+
 class Platform:
     def __init__(self, x, y, width, height):
         self.x = x
@@ -136,6 +158,7 @@ class Game:
         self.state = "menu"
         self.buttons = []
         self.platforms = []
+        self.enemies = []
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
@@ -144,6 +167,10 @@ class Game:
         for i in range(3):
             platform = Platform(300 + i * 200, 500 - i * 100, 200, 50)
             self.platforms.append(platform)
+            
+        for i in range(3):
+            goomba = Goomba(700 + i * 100, 400, 35, "goomba.png", 70, 70, 5, 600, 1000)
+            self.enemies.append(goomba)
             
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
         self.buttons.append(Button("Instructions", self.width//2 - 100, self.height//2 + 50, 50, 250))
@@ -163,6 +190,8 @@ class Game:
         
         for platform in self.platforms:
             platform.display()
+        for enemy in self.enemies:
+            enemy.display()
         
         self.mario.display()
 
