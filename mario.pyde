@@ -100,7 +100,7 @@ class Mario(Creature):
         
         for enemy in g.enemies:
             if self.distance(enemy) <= self.radius + enemy.radius:
-                g.state = "menu"
+                g.state = "pause"
                 self.sound_dies.rewind()
                 self.sound_dies.play()
 
@@ -192,6 +192,7 @@ class Game:
             button.display()
 
     def displayGame(self):
+        background(0)
         for img in self.bgImg[::-1]:
             image(img, 0, 0)
         
@@ -208,7 +209,7 @@ class Game:
     def display(self):
         if self.state == "menu":
             self.displayMenu()
-        else:
+        elif self.state == "game":
             self.displayGame()
         
     def handle_keypress(self):
@@ -237,7 +238,6 @@ def setup():
     size(g.width, g.height)
 
 def draw():
-    background(0)
     g.display()
     
 def keyPressed():
