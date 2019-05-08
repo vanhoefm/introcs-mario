@@ -207,7 +207,12 @@ class Game:
         for img in self.bgImg[::-1]:
             width_right = self.screen_start_x
             width_left = self.width - self.screen_start_x
+            
+            # Draws the image on the right
             image(img, 0, 0, width_left, self.height, width_right, 0, self.width, self.height)
+            
+            # Draw the image on the left
+            image(img, width_left, 0, width_right, self.height, 0, 0, width_right, self.height)
         
         stroke(255)
         line(0, self.ground, self.width, self.ground)
