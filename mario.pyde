@@ -79,6 +79,7 @@ class Mario(Creature):
         self.sound_jump = audioPlayer.loadFile(path + "/sounds/jump.mp3")
         self.sound_dies = audioPlayer.loadFile(path + "/sounds/gameover.wav")
         self.sound_kill = audioPlayer.loadFile(path + "/sounds/kill.mp3")
+        self.sound_coin = audioPlayer.loadFile(path + "/sounds/coin.mp3")
         
     def update(self):
         self.gravity()
@@ -113,7 +114,13 @@ class Mario(Creature):
                     g.state = "pause"
                     self.sound_dies.rewind()
                     self.sound_dies.play()
-    
+                    
+        for star in g.stars:
+            if self.distance(star) <= self.radius + star.radius:
+                g.stars.remove(star)
+                self.sound_coin.rewind()
+                self.sound_coin.play()
+
 class Goomba(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, edge_right, edge_left):
         Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
