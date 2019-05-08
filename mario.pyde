@@ -188,9 +188,15 @@ class Game:
         for i in range(3):
             platform = Platform(300 + i * 200, 500 - i * 100, 200, 50)
             self.platforms.append(platform)
+        for i in range(3):
+            platform = Platform(1300 + i * 200, 400 - i * 100, 200, 50)
+            self.platforms.append(platform)
             
         for i in range(3):
             goomba = Goomba(700 + i * 100, 200, 35, "goomba.png", 70, 70, 5, 600, 1000)
+            self.enemies.append(goomba)
+        for i in range(3):
+            goomba = Goomba(1400 + i * 100, 200, 35, "goomba.png", 70, 70, 5, 1300, 1800)
             self.enemies.append(goomba)
             
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
