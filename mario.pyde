@@ -192,6 +192,7 @@ class Game:
         self.enemies = []
         self.screen_start_x = 0
         self.fires = []
+        self.sound_fire = audioPlayer.loadFile(path + "/sounds/fire.wav")
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
@@ -253,6 +254,8 @@ class Game:
     def handle_fire(self):
         fire = Fire(self.mario.x, self.mario.y, 25, "fire.png", 50, 50, 10, self.mario.direction)
         self.fires.append(fire)
+        self.sound_fire.rewind()
+        self.sound_fire.play()
     
     def handle_keypress(self):
         if keyCode == LEFT:
