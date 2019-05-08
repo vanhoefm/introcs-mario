@@ -51,7 +51,7 @@ class Creature:
     def display(self):
         self.update()
         
-        ellipse(self.x, self.y, 2 * self.radius, 2 * self.radius)
+        #ellipse(self.x - g.screen_start_x, self.y, 2 * self.radius, 2 * self.radius)
         
         if self.vx != 0:
             self.curr_frame = self.curr_frame + 0.3
@@ -65,7 +65,7 @@ class Creature:
             offset_x1 = offset_x2
             offset_x2 = temp
         
-        image(self.img, self.x - self.frame_width//2, self.y - self.frame_height//2,
+        image(self.img, self.x - self.frame_width//2 - g.screen_start_x, self.y - self.frame_height//2,
               self.frame_width, self.frame_height,
               offset_x1, 0, offset_x2, self.frame_height)
     
@@ -92,8 +92,11 @@ class Mario(Creature):
         else:
             self.vx = 0
 
-        self.x += self.vx
-                
+        if self.x + self.vx > 0:
+            self.x += self.vx
+            if self.x > g.width // 2:
+                g.screen_start_x += self.vx
+                    
         if self.key_pressed[UP] and self.vy == 0:
             self.vy = -10
             self.sound_jump.rewind()
@@ -142,7 +145,7 @@ class Platform:
         self.img = loadImage(path + "/images/platform.png")
     
     def display(self):
-        image(self.img, self.x, self.y)
+        image(self.img, self.x - g.screen_start_x, self.y)
 
 class Button:
     def __init__(self, label, x, y, height, width):
@@ -176,6 +179,7 @@ class Game:
         self.buttons = []
         self.platforms = []
         self.enemies = []
+        self.screen_start_x = 0
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
@@ -186,7 +190,7 @@ class Game:
             self.platforms.append(platform)
             
         for i in range(3):
-            goomba = Goomba(700 + i * 100, 400, 35, "goomba.png", 70, 70, 5, 600, 1000)
+            goomba = Goomba(700 + i * 100, 200, 35, "goomba.png", 70, 70, 5, 600, 1000)
             self.enemies.append(goomba)
             
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
