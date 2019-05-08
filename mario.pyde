@@ -26,7 +26,7 @@ class Creature:
 
     def gravity(self):
         self.determine_ground()
-        print(self.ground)
+        #print(self.ground)
         
         # Updates the speed of falling down
         if self.y + self.radius < self.ground:
@@ -144,8 +144,15 @@ class Fire(Creature):
             self.vx = 10
         else:
             self.vx = -10
+        self.time_remaining = 40
 
     def update(self):
+        self.time_remaining -= 1
+        print(self.time_remaining)
+        if self.time_remaining == 0:
+            g.fires.remove(self)
+            return
+        
         self.x += self.vx
         
         for enemy in g.enemies:
@@ -291,6 +298,7 @@ class Game:
 g = Game(1280, 720, 585)
 
 def setup():
+    #frameRate(30)
     size(g.width, g.height)
 
 def draw():
