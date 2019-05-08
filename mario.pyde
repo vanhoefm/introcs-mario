@@ -139,6 +139,7 @@ class Goomba(Creature):
 class Fire(Creature):
     def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, direction):
         Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
+        self.direction = direction
         if direction == 1:
             self.vx = 10
         else:
@@ -146,6 +147,14 @@ class Fire(Creature):
 
     def update(self):
         self.x += self.vx
+        
+        for enemy in g.enemies:
+            if self.distance(enemy) <= self.radius + enemy.radius:
+                g.enemies.remove(enemy)
+                g.fires.remove(self)
+                
+                g.mario.sound_kill.rewind()
+                g.mario.sound_kill.play()
 
 class Platform:
     def __init__(self, x, y, width, height):
