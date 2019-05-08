@@ -205,7 +205,9 @@ class Game:
     def displayGame(self):
         background(0)
         for img in self.bgImg[::-1]:
-            image(img, 0, 0)
+            width_right = self.screen_start_x
+            width_left = self.width - self.screen_start_x
+            image(img, 0, 0, width_left, self.height, width_right, 0, self.width, self.height)
         
         stroke(255)
         line(0, self.ground, self.width, self.ground)
