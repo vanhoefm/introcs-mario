@@ -1,4 +1,4 @@
-import os
+import os, math
 path = os.getcwd()
 add_library("minim")
 audioPlayer = Minim(this)
@@ -53,7 +53,7 @@ class Creature:
         
         #ellipse(self.x - g.screen_start_x, self.y, 2 * self.radius, 2 * self.radius)
         
-        if self.vx != 0:
+        if self.vx != 0 or isinstance(self, Star):
             self.curr_frame = self.curr_frame + 0.3
             if self.curr_frame >= self.num_frames:
                 self.curr_frame = 0
@@ -148,7 +148,6 @@ class Fire(Creature):
 
     def update(self):
         self.time_remaining -= 1
-        print(self.time_remaining)
         if self.time_remaining == 0:
             g.fires.remove(self)
             return
@@ -162,6 +161,20 @@ class Fire(Creature):
                 
                 g.mario.sound_kill.rewind()
                 g.mario.sound_kill.play()
+
+class Star(Creature):
+    def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, radius_circle, initial_angle):
+        Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
+        self.center_x = x
+        self.center_y = y
+        self.radius_circle = radius_circle
+        self.angle = initial_angle
+    
+    def update(self):
+        self.x = self.center_x + math.cos(self.angle) * self.radius_circle
+        self.y = self.center_y + math.sin(self.angle) * self.radius_circle
+        
+        self.angle += 0.02
 
 class Platform:
     def __init__(self, x, y, width, height):
@@ -209,6 +222,7 @@ class Game:
         self.screen_start_x = 0
         self.fires = []
         self.sound_fire = audioPlayer.loadFile(path + "/sounds/fire.wav")
+        self.stars = []
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
@@ -227,7 +241,11 @@ class Game:
         for i in range(3):
             goomba = Goomba(1400 + i * 100, 200, 35, "goomba.png", 70, 70, 5, 1300, 1800)
             self.enemies.append(goomba)
-            
+        
+        for i in range(10):
+            star = Star(300, 300, 20, "star.png", 40, 40, 6, 150, 2 * PI / 10 * i)
+            self.stars.append(star)
+        
         self.buttons.append(Button("Start Game", self.width//2 - 100, self.height//2 - 50, 50, 250))
         self.buttons.append(Button("Instructions", self.width//2 - 100, self.height//2 + 50, 50, 250))
 
@@ -258,6 +276,8 @@ class Game:
             enemy.display()
         for fire in self.fires:
             fire.display()
+        for star in self.stars:
+            star.display()
         
         self.mario.display()
 
