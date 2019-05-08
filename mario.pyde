@@ -136,6 +136,17 @@ class Goomba(Creature):
         
         self.x += self.vx
 
+class Fire(Creature):
+    def __init__(self, x, y, radius, img, frame_width, frame_height, num_frames, direction):
+        Creature.__init__(self, x, y, radius, img, frame_width, frame_height, num_frames)
+        if direction == 1:
+            self.vx = 10
+        else:
+            self.vx = -10
+
+    def update(self):
+        self.x += self.vx
+
 class Platform:
     def __init__(self, x, y, width, height):
         self.x = x
@@ -180,6 +191,7 @@ class Game:
         self.platforms = []
         self.enemies = []
         self.screen_start_x = 0
+        self.fires = []
         
         for i in range(1, 6):
             img = loadImage(path + "/images/layer_0" + str(i) + ".png")
@@ -227,6 +239,8 @@ class Game:
             platform.display()
         for enemy in self.enemies:
             enemy.display()
+        for fire in self.fires:
+            fire.display()
         
         self.mario.display()
 
@@ -235,7 +249,11 @@ class Game:
             self.displayMenu()
         elif self.state == "game":
             self.displayGame()
-        
+    
+    def handle_fire(self):
+        fire = Fire(self.mario.x, self.mario.y, 25, "fire.png", 50, 50, 10, self.mario.direction)
+        self.fires.append(fire)
+    
     def handle_keypress(self):
         if keyCode == LEFT:
             self.mario.key_pressed[LEFT] = True
@@ -243,6 +261,8 @@ class Game:
             self.mario.key_pressed[RIGHT] = True
         elif keyCode == UP:
             self.mario.key_pressed[UP] = True
+        elif keyCode == ord(' '):
+            self.handle_fire()
             
     def handle_keyrelease(self):
         if keyCode == LEFT:
